@@ -1,12 +1,15 @@
-from handlers import handle_change_request, handle_delete_request, handle_new_test_request
-from sqliteProcess import executePendingTests, reTryDownload, wrtieDownloadCache
+from sqliteProcess import executePendingTests, reTryDownload, wrtieDownloadCache, handle_change_request, handle_delete_request, handle_new_test_request
 from testData import subject as sj
 from testData import body as bd
 from parseMail import subjectParse, bodyParse
 
 
 def main():
-    emails = {'7': {"subject": sj, "body": bd}}
+    # create test emails
+    emails = {}
+    for i in range(len(sj)):
+
+        emails[i] = {"subject": sj[i], "body": bd[i]}
 
     for email in emails:
         subject = subjectParse(emails[email]["subject"])
@@ -14,10 +17,13 @@ def main():
         if subject and body:
             if subject["EVT_TYPE"].upper() == "DELETE":
                 handle_delete_request(subject, body)
+                continue
             if subject["EVT_TYPE"].upper() == "CHANGE":
                 handle_change_request(subject, body)
+                continue
             if subject["EVT_TYPE"].upper() == "NEW":
                 handle_new_test_request(email, subject, body)
+                continue
     reTryDownload()
     wrtieDownloadCache()
     executePendingTests()

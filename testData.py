@@ -1,36 +1,4 @@
 
-subject = [
-    # TESTE THE STATES
-    "[NEW] [SM-G731U] 21 (OS_Upgrade) Submission Data Request 7/10/2023",
-    "[CHANGE] [SM-G731U] 21 (OS_Upgrade) Submission Data Request 7/10/2023",
-    "[DELETE] [SM-G731U] 21 (OS_Upgrade) Submission Data Request 7/10/2023",
-
-    # TEST IF RAN Download on update
-    "[NEW] [SM-G731U] 21 (OS_Upgrade) Submission Data Request 7/10/2023",
-
-    #
-    "[DELETE] [SM-G731U] 21 (OS_Upgrade) Submission Data Request 7/10/2023",
-    "[DELETE] [SM-G731U] 21 (OS_Upgrade) Submission Data Request 7/10/2023",
-    "[DELETE] [SM-G731U] 21 (OS_Upgrade) Submission Data Request 7/10/2023",
-    "[DELETE] [SM-G731U] 21 (OS_Upgrade) Submission Data Request 7/10/2023"
-
-]
-
-body = [
-    # TESTE THE STATES
-    text,
-    text,
-    text,
-
-    # TEST IF RAN Download on update
-    text,
-    text.replace(">ABC<", ">CBA<"),
-    text,
-    text,
-    text
-]
-
-
 text = '''<div dir="ltr">
 
 
@@ -141,3 +109,34 @@ text = '''<div dir="ltr">
 <br>
 
 </p></div>'''
+
+subject = [
+    # TESTE THE STATES
+    "[NEW] [SM-G731U] 21 (OS_Upgrade) Submission Data Request 7/10/2023",
+    "[CHANGE] [SM-G731U] 21 (OS_Upgrade) Submission Data Request 7/15/2023",
+    "[DELETE] [SM-G731U] 21 (OS_Upgrade) Submission Data Request 7/15/2023",
+
+    # TEST IF RAN Download on update
+    "[NEW] [SM-G731U] 21 (OS_Upgrade) Submission Data Request 7/10/2023",
+
+    #
+    "[DELETE] [SM-G731U] 21 (OS_Upgrade) Submission Data Request 7/10/2023",
+    "[DELETE] [SM-G731U] 21 (OS_Upgrade) Submission Data Request 7/10/2023",
+    "[DELETE] [SM-G731U] 21 (OS_Upgrade) Submission Data Request 7/10/2023",
+    "[DELETE] [SM-G731U] 21 (OS_Upgrade) Submission Data Request 7/10/2023"
+
+]
+
+body = [
+    # TESTE THE STATES
+    text,
+    text,
+    text,
+
+    # TEST IF RAN Download on update
+    text,
+    text.replace(">ABC<", ">CBA<"),
+    text,
+    text,
+    text
+]

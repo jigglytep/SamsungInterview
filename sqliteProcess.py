@@ -2,7 +2,7 @@ import sqlite3
 from datetime import datetime, timedelta
 from communications import notify, startDownload
 import api
-from handlers import handle_delete_request
+
 
 # DB Connection and Cursor to communicate with the database
 con = sqlite3.connect('instance/project.db', check_same_thread=False)
@@ -27,7 +27,7 @@ downloadStatus = {}
 
 
 def wrtieDownloadCache(data=downloadStatus):
-    for i in data:
+    for i in list(data):
         sql = f"""UPDATE tests SET "downloadState" = "{data[i]}" WHERE id =  "{i}" ;"""
         cur.execute(sql)
         con.commit()
@@ -79,6 +79,8 @@ def insertNew(data):
 
 
 def update(data):
+    oldData = getBySubject(data)
+
     sql = f"""UPDATE "tests" SET
     "dueDate" = ?,
     "SourceSoftware" = ?,
@@ -90,13 +92,13 @@ def update(data):
     WHERE MODEL_LIST = "{data["MODEL_LIST"]}" and SU_NO = {data["SU_NO"]} and SUType = "{data["SUType"]}";"""
 
     data_tuple = (
-        datetime.strptime(data["dueDate"], '%m/%d/%Y'),
-        data["SourceSoftware"],
-        data["TargetSoftware"],
-        data["BinaryName"],
-        data["BinarySize"],
-        data["EVT_TYPE"],
-        data["downloadState"]
+        datetime.strptime(data.get("dueDate", oldData["dueDate"]), '%m/%d/%Y'),
+        data.get("SourceSoftware", oldData["SourceSoftware"]),
+        data.get("TargetSoftware", oldData["TargetSoftware"]),
+        data.get("BinaryName", oldData["BinaryName"]),
+        data.get("BinarySize", oldData["BinarySize"]),
+        data.get("EVT_TYPE", oldData["EVT_TYPE"]),
+        data.get("downloadState", oldData["downloadState"])
     )
 
     cur.execute(sql, data_tuple)
@@ -145,13 +147,41 @@ def executePendingTests():
         update(row)
 
 
-# def get(id):
-#     sql = f"SELECT * FROM TESTS WHERE id = {id};"
-#     cur.execute(sql)
-#     return dict(cur.fetchone())
+def handle_delete_request(subject, body):
+    data = subject | body
+    data["jobState"] = "IDLE"
+    data["downloadState"] = "CANCELED"
+    data["EVT_TYPE"] = "Failed"
+    update(data)
+    api.delete_submission(
+        data["MODEL_LIST"], data["SU_NO"], data["SUType"])
 
 
-# def getBySubject(data):
-#     sql = f"""SELECT * FROM TESTS WHERE MODEL_LIST = {data["MODEL_LIST"]} and SU_NO = {data["SU_NO"]} and SUType = {data["SUType"]};"""
-#     cur.execute(sql)
-#     return dict(cur.fetchone())
+def handle_change_request(subject, body):
+    data = subject | body
+    update(data)
+    wrtieDownloadCache()
+
+
+def handle_new_test_request(id, subject, body):
+    data = subject | body
+    data["id"] = id
+    data["jobState"] = "IDLE"
+    data["downloadState"] = "DOWNLOADING"
+    data["EVT_TYPE"] = "TEST"
+    insertNew(data)
+    print(downloadStatus)
+    downloadStatus[id] = data["downloadState"]
+    wrtieDownloadCache()
+
+
+def getByPK(id):
+    sql = f"SELECT * FROM TESTS WHERE id = {id};"
+    cur.execute(sql)
+    return dict(cur.fetchone())
+
+
+def getBySubject(data):
+    sql = f"""SELECT * FROM TESTS WHERE MODEL_LIST = "{data["MODEL_LIST"]}" and SU_NO = {data["SU_NO"]} and SUType = "{data["SUType"]}";"""
+    cur.execute(sql)
+    return dict(cur.fetchone())
