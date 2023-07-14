@@ -1,6 +1,13 @@
 
 from model import db, app, tests
+import sqlalchemy as sa
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 import datetime
+
+@sa.event.listens_for(db.engine, 'connect')
+def on_connect(dbapi_connection, connection_record):
+    dbapi_connection.create_function('doubleit', 1, doubleit)
 
 
 def writeNew(data):
@@ -24,3 +31,4 @@ def writeNew(data):
 
 def updateRow(data):
     row = tests.query
+

@@ -1,5 +1,6 @@
-from sqlalchemy import MetaData, Column, Table, Integer, String, DateTime
-meta = MetaData()
+from sqlalchemy import MetaData, Column, Table, Integer, String, DateTime,create_engine
+from sqlalchemy.interfaces import PoolListener
+from sqlalchemy import event
 
 
 from sqlalchemy.ext.declarative import declarative_base
@@ -9,13 +10,24 @@ Base = declarative_base()
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
+def notify(*x):
+    print ("Hello",*x)
 
-db = SQLAlchemy()
-app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
-db.init_app(app)
 
-class tests(db.Model):
+
+eng = create_engine( "sqlite:///project.db")
+event.listen(eng, 'notify', notify)
+
+eng.dialect.dbapi.enable_callback_tracebacks( 1 ) # show better errors from user functions
+meta = MetaData()
+# meta.create_all(eng)
+conn = eng.connect()
+
+# app = Flask(__name__)
+# app.config["SQLALCHEMY_DATABASE_URI"] 
+# db.init_app(app)
+
+class tests(Base):
     __tablename__ = "tests"
     id = Column("id", Integer, primary_key=True)
     EVT_TYPE = Column("EVT_TYPE", String)
@@ -27,6 +39,14 @@ class tests(db.Model):
     TargetSoftware = Column("TargetSoftware", String)
     BinaryName = Column("BinaryName", String)
     BinarySize = Column("BinarySize", String)
+    
+    # userEmail = ""
+    # jobState = ""
+    # downloadState = ""
+    # status = ""
+
+
+    
 
 # from sqlalchemy import create_engine
 # engine = create_engine('sqlite:///db_file.db', echo = True)
@@ -66,14 +86,17 @@ class tests(db.Model):
 # # initialize the app with the extension
 # db.init_app(app)
 # import datetime
+import datetime
 
-# x = tests(id = 124,         
-#     EVT_TYPE="NEW",
-#     MODEL_LIST="SM-G731U",
-#     SU_NO="21",
-#     SUType="Regular",
-#     dueDate=datetime.datetime(2020, 5, 17),
-#     SourceSoftware="abc",
-#     TargetSoftware="GHI",
-#     BinaryName="ABC_GHI",
-#     BinarySize="567")
+x = tests(id = 124,         
+    EVT_TYPE="NEW",
+    MODEL_LIST="SM-G731U",
+    SU_NO="21",
+    SUType="Regular",
+    dueDate=datetime.datetime(2020, 5, 17),
+    SourceSoftware="abc",
+    TargetSoftware="GHI",
+    BinaryName="ABC_GHI",
+    BinarySize="567")
+
+print(x)
