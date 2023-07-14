@@ -18,18 +18,31 @@ def getHistory():
 
 def getEmails(historyId = 15586695 ):
 
+    # TODO: Get last history id from data base
+
     try:
         historyList = service.users().history().list(userId="ltsenovoy@gmail.com", startHistoryId=historyId).execute()
         emails = {}
         for history in historyList['history']:
             for message in history['messages']:
-                msg = service.users().messages().get(userId="ltsenovoy@gmail.com", id=message['id']).execute()
+                try:
+                    msg = service.users().messages().get(userId="ltsenovoy@gmail.com", id=message['id']).execute()
+                except:
+                    continue
                 headers = msg["payload"]["headers"]
+                subject = [i['value'] for i in headers if i["name"]=="Subject"][0]
+                # service.users().messages().modify(userId='me', id=message['id'], body={'removeLabelIds': ['UNREAD']}).execute()
+                if "payload" in msg:
+                    if "parts" in msg["payload"]:
+                        data = [base64.urlsafe_b64decode(part["body"]["data"]).decode("utf-8") for part in msg["payload"]["parts"] if part["mimeType"] in ["text/plain", "text/html"]]
+                else:
 
-                subject = [i['value'] for i in headers if i["name"]=="Subject"]
-                data = [base64.urlsafe_b64decode(part["body"]["data"]).decode("utf-8") for part in msg["payload"]["parts"] if part["mimeType"] in ["text/plain", "text/html"]]
-                service.users().messages().modify(userId='me', id=message['id'], body={'removeLabelIds': ['UNREAD']}).execute()
+                    data = {}
                 emails[message['id']] = {"subject": subject, "body":data}
+        newhistoryID = getHistory()
+
+        # TODO: insert new history id in data base
+
 
         return emails
 
