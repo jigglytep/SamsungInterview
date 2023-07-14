@@ -1,5 +1,5 @@
 from __future__ import print_function
-from service import service
+from PrototypeTests.service import service
 
 import base64
 from googleapiclient.errors import HttpError
@@ -40,9 +40,6 @@ def getEmails(historyId = 15586695 ):
                     data = {}
                 emails[message['id']] = {"subject": subject, "body":data}
         newhistoryID = getHistory()
-
-        # TODO: insert new history id in data base
-
 
         return emails
 
