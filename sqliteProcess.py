@@ -14,10 +14,10 @@ con.create_function("startDownload", 5, startDownload)
 
 # TRIGGER Definitions for the database to communicate with the Communicatoin Functions
 
-# cur.execute("DROP TRIGGER downloader")
+cur.execute("DROP TRIGGER downloader")
 cur.execute("DROP TRIGGER notifier")
-# cur.execute("""CREATE TRIGGER downloader AFTER INSERT ON tests BEGIN SELECT startDownload(NEW.id,
-#             NEW.MODEL_LIST, NEW.SU_NO, NEW.SUType, NEW.SourceSoftware); END;""")
+cur.execute("""CREATE TRIGGER downloader AFTER INSERT ON tests BEGIN SELECT startDownload(NEW.id,
+            NEW.MODEL_LIST, NEW.SU_NO, NEW.SUType, NEW.SourceSoftware); END;""")
 cur.execute("""CREATE TRIGGER notifier AFTER UPDATE ON tests BEGIN SELECT notify(
     NEW.id, NEW.MODEL_LIST, NEW.SU_NO, NEW.SUType, NEW.SourceSoftware, OLD.SourceSoftware, NEW.EVT_TYPE, NEW.downloadState); END;""")
 

@@ -116,7 +116,7 @@ subject = [
     "[CHANGE] [SM-G731U] 21 (OS_Upgrade) Submission Data Request 7/15/2023",
     "[DELETE] [SM-G731U] 21 (OS_Upgrade) Submission Data Request 7/15/2023",
 
-    # TEST IF RAN Download on update
+    # TEST 2
     "[NEW] [SM-G731U] 22 (OS_Upgrade) Submission Data Request 7/15/2023",
     "[DELETE] [SM-G731U] 22 (OS_Upgrade) Submission Data Request 7/15/2023",
 
@@ -126,6 +126,10 @@ subject = [
 body = [
     # TESTE THE STATES
     text,
-    # TEST IF RAN Download on update
+    # TEST 2
     text.replace(">ABC<", ">CBA<"),
+    text,
+    text,
+    text,
+
 ]
