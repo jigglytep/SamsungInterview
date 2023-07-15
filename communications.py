@@ -5,12 +5,15 @@
 from api import startDownload
 
 
-def notify(id, model_names_list, SU_NO, SUType, NEWSourceSoftware, OLDSofware, NEWEVT_TYPE):
+def notify(id, model_names_list, SU_NO, SUType, NEWSourceSoftware, OLDSofware, NEWEVT_TYPE, NEWdownloadState):
 
-    if NEWSourceSoftware != OLDSofware:
+    if NEWdownloadState == "NEW":
         print("Download Status updated")
         return {id: "Downloaded"} if startDownload(
             id, model_names_list, SU_NO, SUType, NEWSourceSoftware) == "0" else "Interupted"
+    elif NEWSourceSoftware != OLDSofware:
+        print("Download Changed Software")
+
     elif NEWEVT_TYPE == "Failed":
         print("Dear HOST Machine the job Failed.")
         print("Calling delete_submission()API")

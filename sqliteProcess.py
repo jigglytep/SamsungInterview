@@ -9,17 +9,17 @@ con = sqlite3.connect('instance/project.db', check_same_thread=False)
 con.row_factory = sqlite3.Row
 cur = con.cursor()
 
-con.create_function("notify", 7, notify)
+con.create_function("notify", 8, notify)
 con.create_function("startDownload", 5, startDownload)
 
 # TRIGGER Definitions for the database to communicate with the Communicatoin Functions
 
 # cur.execute("DROP TRIGGER downloader")
-# cur.execute("DROP TRIGGER notifier")
+cur.execute("DROP TRIGGER notifier")
 # cur.execute("""CREATE TRIGGER downloader AFTER INSERT ON tests BEGIN SELECT startDownload(NEW.id,
 #             NEW.MODEL_LIST, NEW.SU_NO, NEW.SUType, NEW.SourceSoftware); END;""")
-# cur.execute("""CREATE TRIGGER notifier AFTER UPDATE ON tests BEGIN SELECT notify(
-#     NEW.id, NEW.MODEL_LIST, NEW.SU_NO, NEW.SUType, NEW.SourceSoftware, OLD.SourceSoftware, NEW.EVT_TYPE); END;""")
+cur.execute("""CREATE TRIGGER notifier AFTER UPDATE ON tests BEGIN SELECT notify(
+    NEW.id, NEW.MODEL_LIST, NEW.SU_NO, NEW.SUType, NEW.SourceSoftware, OLD.SourceSoftware, NEW.EVT_TYPE, NEW.downloadState); END;""")
 
 
 # Simple Caching Storage
@@ -167,10 +167,10 @@ def handle_new_test_request(id, subject, body):
     data = subject | body
     data["id"] = id
     data["jobState"] = "IDLE"
-    data["downloadState"] = "DOWNLOADING"
+    data["downloadState"] = "NEW"
     data["EVT_TYPE"] = "TEST"
     insertNew(data)
-    print(downloadStatus)
+    # print(downloadStatus)
     downloadStatus[id] = data["downloadState"]
     wrtieDownloadCache()
 
