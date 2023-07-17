@@ -1,6 +1,8 @@
 # SamsungInterview
 
-`main.py` Used to kick of the tests
+`statemachine.py` Implementation of a state design pattern.
+
+`main.py` Used to kick of the tests, in a functional approach; original prototype.
 
 `emails.py` Used to connect to the GMAIL API and download emails from my 'LTsenovoy@gmail.com' email account. Requires `credentials.json` file to be work.
 

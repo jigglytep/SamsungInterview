@@ -6,10 +6,7 @@ from parseMail import subjectParse, bodyParse
 
 def main():
     # create test emails
-    emails = {}
-    for i in range(len(sj)):
-
-        emails[i] = {"subject": sj[i], "body": bd[i]}
+    emails = {i: {"subject": sj[i], "body": bd[i]} for i in range(len(sj))}
 
     for email in emails:
         subject = subjectParse(emails[email]["subject"])
