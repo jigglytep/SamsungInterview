@@ -1,8 +1,26 @@
 # SamsungInterview
 
-`statemachine.py` Implementation of a state design pattern.
+#### Create virtual environment
+```
+$ python3 -m venv venv
+```
 
-`main.py` Used to kick of the tests, in a functional approach; original prototype.
+#### Activate Virtual Environment
+```
+$ source venv/bin/activate
+(venv) $
+```
+
+#### Install required packages
+```
+pip install -r requirements.txt
+```
+
+
+#### File Description:
+`main.py` Implementation of a state design pattern.
+
+`functionSolution.py` Used to kick of the tests, in a functional approach; original prototype.
 
 `emails.py` Used to connect to the GMAIL API and download emails from my 'LTsenovoy@gmail.com' email account. Requires `credentials.json` file to be work.
 
